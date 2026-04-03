@@ -22,6 +22,7 @@ function App() {
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
+    setCurrentView('dashboard');
   };
 
   const handleLogout = () => {
