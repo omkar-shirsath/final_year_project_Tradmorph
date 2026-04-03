@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrainCircuit, ArrowRight, ShieldCheck, TrendingUp, BarChart2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const LandingPage = ({ onNavigate }) => {
+const LandingPage = () => {
+    const navigate = useNavigate();
     return (
         <div className="min-h-screen bg-[#0f172a] text-white font-sans overflow-x-hidden">
 
@@ -17,13 +19,13 @@ const LandingPage = ({ onNavigate }) => {
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => onNavigate('login', false)}
+                                onClick={() => navigate('/login')}
                                 className="text-slate-300 hover:text-white font-medium transition-colors"
                             >
                                 Log In
                             </button>
                             <button
-                                onClick={() => onNavigate('login', true)}
+                                onClick={() => navigate('/signup')}
                                 className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
                             >
                                 Sign Up
@@ -54,7 +56,7 @@ const LandingPage = ({ onNavigate }) => {
 
                     <div className="flex justify-center gap-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
                         <button
-                            onClick={() => onNavigate('login', true)}
+                            onClick={() => navigate('/signup')}
                             className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-lg py-4 px-8 rounded-full transition-all shadow-[0_0_40px_rgba(37,99,235,0.4)] hover:shadow-[0_0_60px_rgba(37,99,235,0.6)]"
                         >
                             Start Trading Free

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -6,9 +7,7 @@ import Dashboard from './pages/Dashboard';
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
-  const [currentView, setCurrentView] = useState(token ? 'dashboard' : 'landing');
-  const [isSignupView, setIsSignupView] = useState(false); // Used to toggle Login.jsx to signup mode
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -22,7 +21,7 @@ function App() {
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
-    setCurrentView('dashboard');
+    navigate('/dashboard');
   };
 
   const handleLogout = () => {
@@ -30,7 +29,7 @@ function App() {
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-    setCurrentView('landing');
+    navigate('/');
   };
 
   // --- NEW FUNCTION: Updates Balance without reloading ---
@@ -55,28 +54,26 @@ function App() {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
-  // Navigation Handler for Landing Page to Login
-  const navigateToLogin = (wantsSignup) => {
-    setIsSignupView(wantsSignup);
-    setCurrentView('login');
-  };
 
-  if (currentView === 'landing' && !token) {
-    return <LandingPage onNavigate={navigateToLogin} />;
-  }
-
-  if (currentView === 'login' || !token) {
-    return <Login onLogin={handleLogin} initialIsSignup={isSignupView} onBackToHome={() => setCurrentView('landing')} />;
-  }
-
-  // Pass the new function down to Dashboard
   return (
-    <Dashboard
-      onLogout={handleLogout}
-      user={user}
-      onUpdateBalance={handleBalanceUpdate}
-      onUpdateWatchlist={handleWatchlistUpdate}
-    />
+    <Routes>
+      <Route path="/" element={token ? <Navigate to="/dashboard" /> : <LandingPage />} />
+      <Route path="/login" element={token ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
+      <Route path="/signup" element={token ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
+      <Route path="/dashboard" element={
+        token ? (
+          <Dashboard
+            onLogout={handleLogout}
+            user={user}
+            onUpdateBalance={handleBalanceUpdate}
+            onUpdateWatchlist={handleWatchlistUpdate}
+          />
+        ) : (
+          <Navigate to="/login" />
+        )
+      } />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 

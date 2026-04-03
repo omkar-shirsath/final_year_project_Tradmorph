@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Lock, User, Mail, ArrowRight, Activity, ArrowLeft } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function Login({ onLogin, initialIsSignup = false, onBackToHome }) {
-  const [isSignup, setIsSignup] = useState(initialIsSignup);
+export default function Login({ onLogin }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  // Check if standard signup route was hit
+  const [isSignup, setIsSignup] = useState(location.pathname === '/signup');
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,6 +33,7 @@ export default function Login({ onLogin, initialIsSignup = false, onBackToHome }
       if (isSignup) {
         // If signup successful, switch to login view
         setIsSignup(false);
+        navigate('/login');
         setError('Account created! Please log in.');
         setFormData({ username: '', email: '', password: '' });
       } else {
@@ -45,7 +50,7 @@ export default function Login({ onLogin, initialIsSignup = false, onBackToHome }
   return (
     <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4 relative">
       <button
-        onClick={onBackToHome}
+        onClick={() => navigate('/')}
         className="absolute top-8 left-8 text-slate-400 hover:text-white flex items-center gap-2 transition-colors"
       >
         <ArrowLeft className="w-5 h-5" /> Back to Home
@@ -119,7 +124,7 @@ export default function Login({ onLogin, initialIsSignup = false, onBackToHome }
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => { setIsSignup(!isSignup); setError(''); }}
+            onClick={() => { setIsSignup(!isSignup); navigate(isSignup ? '/login' : '/signup'); setError(''); }}
             className="text-slate-400 hover:text-white text-sm underline"
           >
             {isSignup ? "Already have an account? Log In" : "New user? Create Account"}
